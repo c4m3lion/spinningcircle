@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_osk/flutter_osk.dart';
-import 'package:process_run/shell.dart';
 import 'package:spinningcircle/datas.dart';
+import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
+import 'package:window_manager/window_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -13,33 +14,76 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  FocusNode _focus = FocusNode();
-  TextEditingController txtController = TextEditingController();
-  void _onFocusChange() async {
-    debugPrint("Focus: ${_focus.hasFocus.toString()}");
-    var shell = Shell();
+  // Holds the text that user typed.
+  String text = '';
+  // True if shift enabled.
+  bool shiftEnabled = false;
+  bool showKeyboard = false;
 
-    var t = shell.run("osk.exe");
-    WindowsOSK.show();
+  // is true will show the numeric keyboard.
+  bool isNumericMode = false;
+  TextEditingController txtController = TextEditingController();
+
+  bool isLogin = false;
+
+  /// Fired when the virtual keyboard key is pressed.
+  _onKeyPress(VirtualKeyboardKey key) {
+    if (key.keyType == VirtualKeyboardKeyType.String) {
+      text = text + (shiftEnabled ? key.capsText : key.text);
+    } else if (key.keyType == VirtualKeyboardKeyType.Action) {
+      switch (key.action) {
+        case VirtualKeyboardKeyAction.Backspace:
+          if (text.length == 0) return;
+          text = text.substring(0, text.length - 1);
+          break;
+        case VirtualKeyboardKeyAction.Return:
+          text = text + '\n';
+          break;
+        case VirtualKeyboardKeyAction.Space:
+          text = text + key.text;
+          break;
+        case VirtualKeyboardKeyAction.Shift:
+          shiftEnabled = !shiftEnabled;
+          break;
+        default:
+      }
+    }
+    print(text);
+    // Update the screen
+    setState(() {});
+  }
+
+  void setFullscreen() async {
+    await WindowManager.instance.setFullScreen(true);
+  }
+
+  void login() async {
+    isLogin = true;
+    setState(() {});
+    //TODO: implement api to login
+    await Future.delayed(Duration(seconds: 1));
+    Navigator.pushNamed(context, '/wheel');
+    isLogin = false;
+    txtController.clear();
+    text = "";
+    UserData.chance = 1;
+    UserData.name = "Ali";
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    _focus.addListener(_onFocusChange);
+    setFullscreen();
   }
 
   @override
   void dispose() {
     super.dispose();
-
-    _focus.removeListener(_onFocusChange);
-    _focus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    WindowsOSK.show();
     return Scaffold(
       body: Align(
         alignment: Alignment.topCenter,
@@ -60,8 +104,8 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: 300,
                 child: TextField(
-                  focusNode: _focus,
-                  autofocus: true,
+                  enabled: false,
+                  controller: txtController,
                   //enabled: !process,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -80,25 +124,16 @@ class _LoginPageState extends State<LoginPage> {
                 width: 200,
                 height: 100,
                 child: ElevatedButton(
-                  onPressed: () => {
-                    Navigator.pushReplacementNamed(context, '/game'),
-                  },
+                  onPressed: isLogin
+                      ? null
+                      : () => {
+                            login(),
+                          },
                   //onPressed:
                   //    process ? null : () => {checkInput(canGo: true)},
                   child: Text(
                     "Başla",
                     style: TextStyle(fontSize: 30),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(MyColors.green),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        side: BorderSide(
-                          width: 0.0,
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -109,11 +144,33 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(fontSize: 20, color: MyColors.white),
                   textAlign: TextAlign.center,
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: isLogin
+          ? null
+          : Container(
+              // Keyboard is transparent
+              color: Colors.deepPurple,
+              child: VirtualKeyboard(
+                  // Default height is 300
+                  height: 350,
+                  // Default height is will screen width
+                  width: 600,
+                  // Default is black
+                  textColor: Colors.white,
+                  textController: txtController,
+                  // Default 14
+                  fontSize: 20,
+                  // the layouts supported
+                  defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
+                  // [A-Z, 0-9]
+                  type: VirtualKeyboardType.Alphanumeric,
+                  // Callback for key press event
+                  onKeyPress: _onKeyPress),
+            ),
     );
   }
 }

@@ -3,6 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  desktop_window
+  libwinmedia
+  window_manager
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
