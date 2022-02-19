@@ -129,81 +129,83 @@ class _WheelPageState extends State<WheelPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset(
-                  "assets/wheelback.png",
-                  height: 645,
-                ),
-                Center(
-                  child: SizedBox(
-                    height: 500,
-                    child: FortuneWheel(
-                      animateFirst: false,
-                      duration: Duration(seconds: spinningspeed),
-                      indicators: <FortuneIndicator>[
-                        FortuneIndicator(
-                          alignment: Alignment.topCenter,
-                          child: SizedBox(
-                            child: TriangleIndicator(
-                              color: MyColors.red,
+            Expanded(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    "assets/wheelback.png",
+                    height: 645,
+                  ),
+                  Center(
+                    child: SizedBox(
+                      height: 500,
+                      child: FortuneWheel(
+                        animateFirst: false,
+                        duration: Duration(seconds: spinningspeed),
+                        indicators: <FortuneIndicator>[
+                          FortuneIndicator(
+                            alignment: Alignment.topCenter,
+                            child: SizedBox(
+                              child: TriangleIndicator(
+                                color: MyColors.red,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                      onFling: () {
-                        powerstop(spinspeed: 10);
-                      },
-                      onAnimationStart: () {
-                        print(spinningspeed);
-                      },
-                      onAnimationEnd: () {
-                        win(context);
-                      },
-                      selected: controller.stream,
-                      items: [
-                        FortuneItem(
-                          child: Text('Masin'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('playstation'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah1'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah2'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah3'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah4'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah5'),
-                          style: wheelitemStyle(),
-                        ),
-                        FortuneItem(
-                          child: Text('silah6'),
-                          style: wheelitemStyle(),
-                        ),
-                      ],
+                        ],
+                        onFling: () {
+                          powerstop(spinspeed: 10);
+                        },
+                        onAnimationStart: () {
+                          print(spinningspeed);
+                        },
+                        onAnimationEnd: () {
+                          win(context);
+                        },
+                        selected: controller.stream,
+                        items: [
+                          FortuneItem(
+                            child: Text('Masin'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('playstation'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah1'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah2'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah3'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah4'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah5'),
+                            style: wheelitemStyle(),
+                          ),
+                          FortuneItem(
+                            child: Text('silah6'),
+                            style: wheelitemStyle(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Stack(
               alignment: Alignment.center,
